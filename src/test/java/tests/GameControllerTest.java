@@ -2,6 +2,8 @@ package tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -22,12 +24,12 @@ public class GameControllerTest {
 
 	@Test
 	public void testBodypartList() {
-		assertEquals(controller.getBodypartList().size(), 2);
+		assertEquals(2, controller.getBodypartList().size());
 	}
 
 	@Test
 	public void testFoodList() {
-		assertEquals(controller.getFoodList().size(), 1);
+		assertEquals(1, controller.getFoodList().size());
 	}
 
 	@Test
@@ -103,12 +105,125 @@ public class GameControllerTest {
 	public void testBorderIntersection() {
 
 		controller.moveSnake(Direction.LEFT);
-		assertFalse(controller.checkBorderIntersection());
+		assertFalse(controller.isBorderIntersecting());
 
-		for (int i = 0; i <10; i++) {
+		for (int i = 0; i < 10; i++) {
 			controller.moveSnake(Direction.LEFT);
 		}
-		assertTrue(controller.checkBorderIntersection());
+		assertTrue(controller.isBorderIntersecting());
+	}
+
+	@Test
+	public void testAddBodypart() {
+		int bodypartCount = controller.getBodypartList().size();
+		controller.addBodypart();
+		assertEquals(bodypartCount + 1, controller.getBodypartList().size());
+
+	}
+
+	@Test
+	public void testSelfIntersection() {
+		for (int i = 0; i < 3; i++) {
+			controller.addBodypart();
+		}
+		controller.moveSnake(Direction.LEFT);
+		assertFalse(controller.isSelfIntersecting());
+		controller.moveSnake(Direction.DOWN);
+		assertFalse(controller.isSelfIntersecting());
+		controller.moveSnake(Direction.RIGHT);
+		assertTrue(controller.isSelfIntersecting());
+	}
+
+	@Test
+	public void testCheckGameOverWithBorderIntersection() {
+		controller.moveSnake(Direction.LEFT);
+		assertFalse(controller.isGameOver());
+
+		for (int i = 0; i < 10; i++) {
+			controller.moveSnake(Direction.LEFT);
+		}
+		assertTrue(controller.isGameOver());
+	}
+
+	@Test
+	public void testCheckGameOverWithSelfIntersection() {
+		for (int i = 0; i < 3; i++) {
+			controller.addBodypart();
+		}
+		controller.moveSnake(Direction.LEFT);
+		assertFalse(controller.isGameOver());
+		controller.moveSnake(Direction.DOWN);
+		assertFalse(controller.isGameOver());
+		controller.moveSnake(Direction.RIGHT);
+		assertTrue(controller.isGameOver());
+	}
+
+	@Test
+	public void testCreateFood() {
+		assertEquals(1, controller.getFoodList().size());
+		controller.createRandomFood();
+		assertEquals(2, controller.getFoodList().size());
+	}
+
+	@Test
+	public void testFoodOnPosition() {
+		assertTrue(controller.isFoodOnThisPosition(4, 4));
+		assertFalse(controller.isFoodOnThisPosition(20, 20));
+		assertFalse(controller.isFoodOnThisPosition(10, 10));
+
+	}
+
+	@Test
+	public void testSnakeOnPosition() {
+		assertTrue(controller.isSnakeOnThisPosition(10, 10));
+		assertFalse(controller.isSnakeOnThisPosition(20, 10));
+	}
+
+	@Test
+	public void testIsSnakeheadOnFood() {
+		assertNull(controller.getFoodOnSnakehead());
+		controller.createFood(9, 10);
+		assertNull(controller.getFoodOnSnakehead());
+		controller.moveSnake(Direction.LEFT);
+		assertNotNull(controller.getFoodOnSnakehead());
+		controller.moveSnake(Direction.LEFT);
+		assertNull(controller.getFoodOnSnakehead());
+	}
+
+	@Test
+	public void testEatFood() {
+		controller.createFood(9, 10);
+		assertEquals(2, controller.getFoodList().size());
+		controller.moveSnake(Direction.LEFT);
+		controller.eatFood();
+		assertEquals(1, controller.getFoodList().size());
+		assertEquals(3, controller.getBodypartList().size());
+		controller.moveSnake(Direction.LEFT);
+		controller.eatFood();
+		assertEquals(1, controller.getFoodList().size());
+		assertEquals(3, controller.getBodypartList().size());
+	}
+
+	@Test
+	public void testWin() {
+		assertFalse(controller.isWin());
+		// 398 because the default arena is 20*20 and we already have two snake
+		// bodyparts
+		for (int i = 0; i < 398; i++) {
+			controller.addBodypart();
+		}
+		assertTrue(controller.isWin());
+	}
+
+	@Test
+	public void testReadUserInput() {
+		// TODO Keybindings ? 
+	}
+
+	@Test
+	public void testCalculateFrame() {
+		// TODO controller.calculateFrame();
+
 	}
 
 }

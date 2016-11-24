@@ -1,11 +1,12 @@
 package snake;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class GameController {
 
 	private ArrayList<Bodypart> bodyparts = null;
-	private ArrayList<Food> food = null;
+	private ArrayList<Food> foodList = null;
 	private Direction currentDirection = Direction.UP;
 	private Arena arena;
 
@@ -21,9 +22,9 @@ public class GameController {
 	}
 
 	private void initFood() {
-		food = new ArrayList<Food>();
+		foodList = new ArrayList<Food>();
 		Food foodObject = new Food(4, 4);
-		food.add(foodObject);
+		foodList.add(foodObject);
 	}
 
 	private void initBodyparts() {
@@ -41,7 +42,7 @@ public class GameController {
 	}
 
 	public ArrayList<Food> getFoodList() {
-		return this.food;
+		return this.foodList;
 	}
 
 	public void moveSnake(Direction direction) {
@@ -90,7 +91,7 @@ public class GameController {
 
 	}
 
-	public boolean checkBorderIntersection() {
+	public boolean isBorderIntersecting() {
 		boolean borderIntersection = false;
 		Bodypart head = this.bodyparts.get(0);
 		if (head.getPositionX() < 0 || head.getPositionX() > this.arena.x || head.getPositionY() < 0
@@ -99,5 +100,107 @@ public class GameController {
 		}
 
 		return borderIntersection;
+	}
+
+	public void addBodypart() {
+		Bodypart newBodypart = new Bodypart(-1, -1);
+		newBodypart.setNextBodypart(bodyparts.get(bodyparts.size() - 1));
+		bodyparts.add(newBodypart);
+
+	}
+
+	public boolean isSelfIntersecting() {
+		boolean selfIntersection = false;
+		Bodypart head = bodyparts.get(0);
+		for (int i = 1; i < bodyparts.size(); i++) {
+			Bodypart part = bodyparts.get(i);
+			if (head.getPositionX() == part.getPositionX() && head.getPositionY() == part.getPositionY()) {
+				selfIntersection = true;
+				break;
+			}
+		}
+
+		return selfIntersection;
+	}
+
+	public boolean isGameOver() {
+		boolean isGameOver = false;
+		if (this.isBorderIntersecting() || this.isSelfIntersecting()) {
+			isGameOver = true;
+		}
+		return isGameOver;
+	}
+
+	public boolean isSnakeOnThisPosition(int x, int y) {
+		boolean isOnPosition = false;
+		for (Bodypart part : this.bodyparts) {
+			if (part.getPositionX() == x && part.getPositionY() == y) {
+				isOnPosition = true;
+				break;
+			}
+		}
+		return isOnPosition;
+	}
+
+	/**
+	 * Only call this if you have not won yet and if the count of food is
+	 * smaller than the max count of food
+	 * 
+	 */
+	public void createRandomFood() {
+		int x, y;
+		Random random = new Random();
+		do {
+			x = random.nextInt(this.arena.x + 1);
+			y = random.nextInt(this.arena.y + 1);
+		} while (this.isSnakeOnThisPosition(x, y) || this.isFoodOnThisPosition(x, y));
+
+		this.createFood(x, y);
+	}
+
+	public void createFood(int x, int y) {
+		Food food = new Food(x, y);
+		this.foodList.add(food);
+	}
+
+	public boolean isFoodOnThisPosition(int x, int y) {
+		boolean isOnPosition = false;
+		for (Food food : this.foodList) {
+			if (food.getPositionX() == x && food.getPositionY() == y) {
+				isOnPosition = true;
+				break;
+			}
+		}
+		return isOnPosition;
+	}
+
+	public Food getFoodOnSnakehead() {
+		Food result = null;
+		Bodypart head = this.bodyparts.get(0);
+		for (Food food : this.foodList) {
+			if (food.getPositionX() == head.getPositionX() && food.getPositionY() == head.getPositionY()) {
+				result = food;
+				break;
+			}
+		}
+		return result;
+	}
+
+	public void eatFood() {
+		Food food = this.getFoodOnSnakehead();
+		if (food != null) {
+			this.foodList.remove(food);
+			this.addBodypart();
+		}
+
+	}
+
+	public boolean isWin() {
+		boolean win = false;
+		int possiblePositions = this.arena.x * this.arena.y;
+		if (this.bodyparts.size() >= possiblePositions) {
+			win = true;
+		}
+		return win;
 	}
 }
