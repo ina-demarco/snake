@@ -8,7 +8,7 @@ import snake.Food;
 
 public class FoodTest {
 
-	Food food;
+	private Food food;
 	
 	@Before
 	public void setup(){

@@ -1,5 +1,8 @@
 package snake;
-
+/**
+ * This class represents a part of the snake.
+ *
+ */
 public class Bodypart extends GameObject {
 
 	private Bodypart nextBodypart;

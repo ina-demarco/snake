@@ -3,17 +3,22 @@ package snake;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * 
+ * This class handles the game loop: reading the user input, calculating the
+ * next position and rendering the next frame.
+ */
 public class GameController {
 
 	private ArrayList<Bodypart> bodyparts = null;
 	private ArrayList<Food> foodList = null;
 	private Direction currentDirection = Direction.UP;
+
 	private Arena arena;
 
-	public GameController() {
-		this.arena = new Arena();
-		this.arena.x = 20;
-		this.arena.y = 20;
+	public GameController(Arena arena) {
+		this.arena = arena;
+		this.initGameObjects();
 	}
 
 	public void initGameObjects() {
@@ -61,17 +66,7 @@ public class GameController {
 	}
 
 	private void moveHead(Bodypart head, Direction direction) {
-		if (currentDirection == Direction.UP && direction == Direction.DOWN) {
-			// TODO simplify ifs
-		} else if (currentDirection == Direction.DOWN && direction == Direction.UP) {
-			// do nothing
-		} else if (currentDirection == Direction.RIGHT && direction == Direction.LEFT) {
-			// do nothing
-		} else if (currentDirection == Direction.LEFT && direction == Direction.RIGHT) {
-			// do nothing
-		} else {
-			currentDirection = direction;
-		}
+		this.setCurrentDirection(direction);
 		switch (currentDirection) {
 		case UP:
 			head.setPositionY(head.getPositionY() - 1);
@@ -94,8 +89,8 @@ public class GameController {
 	public boolean isBorderIntersecting() {
 		boolean borderIntersection = false;
 		Bodypart head = this.bodyparts.get(0);
-		if (head.getPositionX() < 0 || head.getPositionX() > this.arena.x || head.getPositionY() < 0
-				|| head.getPositionY() > this.arena.y) {
+		if (head.getPositionX() < 0 || head.getPositionX() >= this.arena.x || head.getPositionY() < 0
+				|| head.getPositionY() >= this.arena.y) {
 			borderIntersection = true;
 		}
 
@@ -144,7 +139,7 @@ public class GameController {
 
 	/**
 	 * Only call this if you have not won yet and if the count of food is
-	 * smaller than the max count of food
+	 * smaller than the max count of food Creates ONE food
 	 * 
 	 */
 	public void createRandomFood() {
@@ -203,4 +198,47 @@ public class GameController {
 		}
 		return win;
 	}
+
+	public void calculateFrame() {
+
+		this.moveSnake(this.getCurrentDirection());
+		if (this.isGameOver()) {
+			// show game over screen in gui
+		} else {
+			this.eatFood();
+			if (this.isWin()) {
+				// show win screen in gui
+			} else {
+				if (this.foodList.size() < this.arena.maxFood) {
+					this.createRandomFood();
+				}
+			}
+		}
+		try {
+			Thread.sleep(50);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	public Direction getCurrentDirection() {
+		return currentDirection;
+	}
+
+	public void setCurrentDirection(Direction direction) {
+		if (currentDirection == Direction.UP && direction == Direction.DOWN) {
+			// TODO simplify ifs
+		} else if (currentDirection == Direction.DOWN && direction == Direction.UP) {
+			// do nothing
+		} else if (currentDirection == Direction.RIGHT && direction == Direction.LEFT) {
+			// do nothing
+		} else if (currentDirection == Direction.LEFT && direction == Direction.RIGHT) {
+			// do nothing
+		} else {
+			this.currentDirection = direction;
+		}
+	}
+
 }

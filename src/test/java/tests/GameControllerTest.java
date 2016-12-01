@@ -9,16 +9,19 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import snake.Arena;
 import snake.Direction;
 import snake.GameController;
 
 public class GameControllerTest {
 
-	GameController controller;
+	private GameController controller;
+	private Arena arena;
 
 	@Before
 	public void setup() {
-		controller = new GameController();
+		arena = new Arena();
+		controller = new GameController(arena);
 		controller.initGameObjects();
 	}
 
@@ -217,12 +220,17 @@ public class GameControllerTest {
 
 	@Test
 	public void testReadUserInput() {
-		// TODO Keybindings ? 
+		// TODO Keybindings ?
 	}
 
 	@Test
 	public void testCalculateFrame() {
-		// TODO controller.calculateFrame();
+		for (int i = 0; i < 11; i++) {
+			controller.calculateFrame();
+		}
+		// only with food max size = 3
+		assertEquals(3, controller.getFoodList().size());
+		assertTrue(controller.isGameOver());
 
 	}
 

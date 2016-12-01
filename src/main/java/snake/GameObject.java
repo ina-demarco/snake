@@ -1,5 +1,9 @@
 package snake;
 
+/**
+ * Super class for all game objects. Each game object has a position.
+ *
+ */
 public abstract class GameObject {
 
 	private int x;
