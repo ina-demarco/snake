@@ -28,11 +28,15 @@ public class Arena extends Application {
 	private static final String KEY_MAX_FOOD = "maxFood";
 	private static final String KEY_Y = "y";
 	private static final String KEY_X = "x";
-	public int x = 20;
-	public int y = 20;
-	public int maxFood = 3;
+	private static final String KEY_SPEED = "speed";
+	private static final int scaling = 20;
+	
+	private int x = 20;
+	private int y = 20;
+	private int maxFood = 3;
+	private int speed = 10;
 	private GameController gameController;
-	private static int scaling = 20;
+	
 	private Canvas canvas;
 
 	public Arena() {
@@ -48,9 +52,9 @@ public class Arena extends Application {
 
 		Group root = new Group();
 		canvas = new Canvas(this.x * scaling, this.y * scaling);
-		
+
 		GraphicsContext gc = canvas.getGraphicsContext2D();
-		
+
 		renderFrame(gc);
 
 		root.getChildren().add(canvas);
@@ -90,9 +94,7 @@ public class Arena extends Application {
 			@Override
 			public void handle(long now) {
 				try {
-					//Thread.sleep(66);
-					//TODO speed in properties
-					Thread.sleep(100);
+					Thread.sleep(1000 / speed);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -100,7 +102,7 @@ public class Arena extends Application {
 				gameController.calculateFrame();
 				if (gameController.isGameOver()) {
 					displayGameOver(canvas);
-					
+
 					this.stop();
 				} else if (gameController.isWin()) {
 					displayWin(canvas);
@@ -111,19 +113,17 @@ public class Arena extends Application {
 				}
 			}
 
-			
 		}.start();
 
 	}
 
-	
 	protected void displayGameOver(Canvas canvas2) {
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		gc.setFill(Color.RED);
 		gc.setTextAlign(TextAlignment.CENTER);
 		gc.setFont(new Font(40));
-		gc.fillText(GAME_OVER, canvas.getWidth()/2, canvas.getHeight()/2);
-		
+		gc.fillText(GAME_OVER, canvas.getWidth() / 2, canvas.getHeight() / 2);
+
 	}
 
 	private void displayWin(Canvas canvas) {
@@ -131,13 +131,13 @@ public class Arena extends Application {
 		gc.setFill(Color.LIME);
 		gc.setTextAlign(TextAlignment.CENTER);
 		gc.setFont(new Font(40));
-		gc.fillText(YOU_WIN, canvas.getWidth()/2, canvas.getHeight()/2);
+		gc.fillText(YOU_WIN, canvas.getWidth() / 2, canvas.getHeight() / 2);
 	}
-	
+
 	private void renderFrame(GraphicsContext gc) {
-		//clear background
-		gc.setFill(Color.WHITE);
-		gc.fillRect(0, 0, gc.getCanvas().getHeight(), gc.getCanvas().getHeight());
+		// clear background
+		gc.setFill(Color.BEIGE);
+		gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 		this.drawSnake(gc);
 		this.drawFood(gc);
 	}
@@ -186,6 +186,7 @@ public class Arena extends Application {
 			prop.setProperty(KEY_X, "20");
 			prop.setProperty(KEY_Y, "20");
 			prop.setProperty(KEY_MAX_FOOD, "3");
+			prop.setProperty(KEY_SPEED, "10");
 
 			// save properties to project root folder
 			prop.store(output, null);
@@ -223,12 +224,12 @@ public class Arena extends Application {
 			this.y = Integer.parseInt(yValue);
 			String maxFoodValue = prop.getProperty(KEY_MAX_FOOD);
 			this.maxFood = Integer.parseInt(maxFoodValue);
+			String speedValue = prop.getProperty(KEY_SPEED);
+			this.speed = Integer.parseInt(speedValue);
 
-		} catch (IOException ex) {
+		} catch (IOException | NumberFormatException ex) {
 			this.createProperties();
 			System.out.println("Properties error, please try again");
-		} catch (NumberFormatException e) {
-			System.out.println("wrong values in properties");
 		} finally {
 			if (input != null) {
 				try {
@@ -238,6 +239,18 @@ public class Arena extends Application {
 				}
 			}
 		}
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public int getMaxFood() {
+		return maxFood;
 	}
 
 	public static void main(String[] args) {

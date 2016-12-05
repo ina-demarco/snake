@@ -89,8 +89,8 @@ public class GameController {
 	public boolean isBorderIntersecting() {
 		boolean borderIntersection = false;
 		Bodypart head = this.bodyparts.get(0);
-		if (head.getPositionX() < 0 || head.getPositionX() >= this.arena.x || head.getPositionY() < 0
-				|| head.getPositionY() >= this.arena.y) {
+		if (head.getPositionX() < 0 || head.getPositionX() >= this.arena.getX() || head.getPositionY() < 0
+				|| head.getPositionY() >= this.arena.getY()) {
 			borderIntersection = true;
 		}
 
@@ -146,8 +146,8 @@ public class GameController {
 		int x, y;
 		Random random = new Random();
 		do {
-			x = random.nextInt(this.arena.x + 1);
-			y = random.nextInt(this.arena.y + 1);
+			x = random.nextInt(this.arena.getX());
+			y = random.nextInt(this.arena.getY());
 		} while (this.isSnakeOnThisPosition(x, y) || this.isFoodOnThisPosition(x, y));
 
 		this.createFood(x, y);
@@ -192,7 +192,7 @@ public class GameController {
 
 	public boolean isWin() {
 		boolean win = false;
-		int possiblePositions = this.arena.x * this.arena.y;
+		int possiblePositions = this.arena.getX() * this.arena.getY();
 		if (this.bodyparts.size() >= possiblePositions) {
 			win = true;
 		}
@@ -209,7 +209,7 @@ public class GameController {
 			if (this.isWin()) {
 				// show win screen in gui
 			} else {
-				if (this.foodList.size() < this.arena.maxFood) {
+				if (this.foodList.size() < this.arena.getMaxFood()) {
 					this.createRandomFood();
 				}
 			}
