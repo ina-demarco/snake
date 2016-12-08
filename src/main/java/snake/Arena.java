@@ -221,24 +221,16 @@ public class Arena extends Application {
 
 			// get the property value and print it out
 			String xValue = prop.getProperty(KEY_X);
-			this.x = Integer.parseInt(xValue);
+			this.setX(Integer.parseInt(xValue));
 			String yValue = prop.getProperty(KEY_Y);
-			this.y = Integer.parseInt(yValue);
-			if (this.getX() < 10) {
-				this.x = 10;
-			}
-			if (this.getY() < 10) {
-				this.y = 10;
-			}
+			this.setY(Integer.parseInt(yValue));
 
 			String maxFoodValue = prop.getProperty(KEY_MAX_FOOD);
-			this.maxFood = Integer.parseInt(maxFoodValue);
+			this.setMaxFood(Integer.parseInt(maxFoodValue));
 			String speedValue = prop.getProperty(KEY_SPEED);
-			this.speed = Integer.parseInt(speedValue);
+			this.setSpeed(Integer.parseInt(speedValue));
 
-		} catch (IOException |
-
-				NumberFormatException ex) {
+		} catch (IOException | NumberFormatException ex) {
 			this.createProperties();
 			System.out.println("Properties error, please try again");
 		} finally {
@@ -265,19 +257,26 @@ public class Arena extends Application {
 	}
 
 	public void setX(int x) {
-		this.x = x;
+		this.x = setMinValue(x, 10);
 	}
 
 	public void setY(int y) {
-		this.y = y;
+		this.y = setMinValue(y, 10);
 	}
 
 	public void setMaxFood(int maxFood) {
-		this.maxFood = maxFood;
+		this.maxFood = setMinValue(maxFood, 1);
 	}
 
 	public void setSpeed(int speed) {
-		this.speed = speed;
+		this.speed = setMinValue(speed, 2);
+	}
+
+	private int setMinValue(int value, int min) {
+		if (value < min) {
+			value = min;
+		}
+		return value;
 	}
 
 	public static void main(String[] args) {

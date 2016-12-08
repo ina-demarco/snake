@@ -32,14 +32,23 @@ public class GameController {
 
 	private void initBodyparts() {
 		this.bodyparts = new ArrayList<Bodypart>();
-		Bodypart head = new Bodypart(this.arena.getX()/2, this.arena.getY()/2);
+		Bodypart head = new Bodypart(this.arena.getX() / 2, this.arena.getY() / 2);
 		head.setIsHead(true);
-		Bodypart tail = new Bodypart(this.arena.getX()/2, (this.arena.getY()/2) +1);
+		Bodypart tail = new Bodypart(this.arena.getX() / 2, (this.arena.getY() / 2) + 1);
 		tail.setNextBodypart(head);
 		bodyparts.add(head);
 		bodyparts.add(tail);
 	}
 
+	public void printGameStatus(){
+		System.out.println("Available: "+this.countFreePositions());
+		System.out.println("Size Food List"+foodList.size());
+		System.out.println("Size Bodypart List"+bodyparts.size());
+		for (Bodypart part : this.bodyparts){
+			System.out.println("x: "+part.getPositionX()+" y:"+part.getPositionY());
+		}
+		
+	}
 	public ArrayList<Bodypart> getBodypartList() {
 		return this.bodyparts;
 	}
@@ -141,14 +150,17 @@ public class GameController {
 	 * 
 	 */
 	public void createRandomFood() {
-		int x, y;
-		Random random = new Random();
-		do {
-			x = random.nextInt(this.arena.getX());
-			y = random.nextInt(this.arena.getY());
-		} while (this.isSnakeOnThisPosition(x, y) || this.isFoodOnThisPosition(x, y));
+		if (this.foodList.size() < this.arena.getMaxFood() && this.countFreePositions() > 0) {
 
-		this.createFood(x, y);
+			int x, y;
+			Random random = new Random();
+			do {
+				x = random.nextInt(this.arena.getX());
+				y = random.nextInt(this.arena.getY());
+			} while (this.isSnakeOnThisPosition(x, y) || this.isFoodOnThisPosition(x, y));
+
+			this.createFood(x, y);
+		}
 	}
 
 	public void createFood(int x, int y) {
@@ -198,7 +210,7 @@ public class GameController {
 	}
 
 	public void calculateFrame() {
-
+		
 		this.moveSnake(this.getCurrentDirection());
 		if (this.isGameOver()) {
 			// show game over screen in gui
@@ -207,9 +219,8 @@ public class GameController {
 			if (this.isWin()) {
 				// show win screen in gui
 			} else {
-				if (this.foodList.size() < this.arena.getMaxFood()) {
-					this.createRandomFood();
-				}
+				// ensure that there is enough free space to avoid endless loop
+				this.createRandomFood();
 			}
 		}
 		try {
@@ -219,6 +230,10 @@ public class GameController {
 			e.printStackTrace();
 		}
 
+	}
+
+	private int countFreePositions() {
+		return (this.arena.getX() * this.arena.getY()) - (this.bodyparts.size() + this.foodList.size());
 	}
 
 	public Direction getCurrentDirection() {
