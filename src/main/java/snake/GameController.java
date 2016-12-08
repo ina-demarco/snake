@@ -28,15 +28,13 @@ public class GameController {
 
 	private void initFood() {
 		foodList = new ArrayList<Food>();
-		Food foodObject = new Food(4, 4);
-		foodList.add(foodObject);
 	}
 
 	private void initBodyparts() {
 		this.bodyparts = new ArrayList<Bodypart>();
-		Bodypart head = new Bodypart(10, 10);
+		Bodypart head = new Bodypart(this.arena.getX()/2, this.arena.getY()/2);
 		head.setIsHead(true);
-		Bodypart tail = new Bodypart(10, 11);
+		Bodypart tail = new Bodypart(this.arena.getX()/2, (this.arena.getY()/2) +1);
 		tail.setNextBodypart(head);
 		bodyparts.add(head);
 		bodyparts.add(tail);

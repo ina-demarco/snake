@@ -21,6 +21,9 @@ public class GameControllerTest {
 	@Before
 	public void setup() {
 		arena = new Arena();
+		arena.setX(20);
+		arena.setY(20);
+		arena.setMaxFood(3);
 		controller = new GameController(arena);
 		controller.initGameObjects();
 	}
@@ -32,7 +35,7 @@ public class GameControllerTest {
 
 	@Test
 	public void testFoodList() {
-		assertEquals(1, controller.getFoodList().size());
+		assertEquals(0, controller.getFoodList().size());
 	}
 
 	@Test
@@ -163,13 +166,14 @@ public class GameControllerTest {
 
 	@Test
 	public void testCreateFood() {
-		assertEquals(1, controller.getFoodList().size());
+		assertEquals(0, controller.getFoodList().size());
 		controller.createRandomFood();
-		assertEquals(2, controller.getFoodList().size());
+		assertEquals(1, controller.getFoodList().size());
 	}
 
 	@Test
 	public void testFoodOnPosition() {
+		controller.createFood(4, 4);
 		assertTrue(controller.isFoodOnThisPosition(4, 4));
 		assertFalse(controller.isFoodOnThisPosition(20, 20));
 		assertFalse(controller.isFoodOnThisPosition(10, 10));
@@ -196,14 +200,14 @@ public class GameControllerTest {
 	@Test
 	public void testEatFood() {
 		controller.createFood(9, 10);
-		assertEquals(2, controller.getFoodList().size());
+		assertEquals(1, controller.getFoodList().size());
 		controller.moveSnake(Direction.LEFT);
 		controller.eatFood();
-		assertEquals(1, controller.getFoodList().size());
+		assertEquals(0, controller.getFoodList().size());
 		assertEquals(3, controller.getBodypartList().size());
 		controller.moveSnake(Direction.LEFT);
 		controller.eatFood();
-		assertEquals(1, controller.getFoodList().size());
+		assertEquals(0, controller.getFoodList().size());
 		assertEquals(3, controller.getBodypartList().size());
 	}
 
@@ -216,11 +220,6 @@ public class GameControllerTest {
 			controller.addBodypart();
 		}
 		assertTrue(controller.isWin());
-	}
-
-	@Test
-	public void testReadUserInput() {
-		// TODO Keybindings ?
 	}
 
 	@Test

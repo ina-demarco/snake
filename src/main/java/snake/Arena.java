@@ -14,6 +14,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
@@ -30,13 +31,13 @@ public class Arena extends Application {
 	private static final String KEY_X = "x";
 	private static final String KEY_SPEED = "speed";
 	private static final int scaling = 20;
-	
+
 	private int x = 20;
 	private int y = 20;
 	private int maxFood = 3;
 	private int speed = 10;
 	private GameController gameController;
-	
+
 	private Canvas canvas;
 
 	public Arena() {
@@ -82,6 +83,7 @@ public class Arena extends Application {
 				}
 			}
 		});
+		primaryStage.getIcons().add(new Image("file:snakeicon.png"));
 		primaryStage.setScene(scene);
 		primaryStage.setResizable(false);
 		primaryStage.show();
@@ -222,12 +224,21 @@ public class Arena extends Application {
 			this.x = Integer.parseInt(xValue);
 			String yValue = prop.getProperty(KEY_Y);
 			this.y = Integer.parseInt(yValue);
+			if (this.getX() < 10) {
+				this.x = 10;
+			}
+			if (this.getY() < 10) {
+				this.y = 10;
+			}
+
 			String maxFoodValue = prop.getProperty(KEY_MAX_FOOD);
 			this.maxFood = Integer.parseInt(maxFoodValue);
 			String speedValue = prop.getProperty(KEY_SPEED);
 			this.speed = Integer.parseInt(speedValue);
 
-		} catch (IOException | NumberFormatException ex) {
+		} catch (IOException |
+
+				NumberFormatException ex) {
 			this.createProperties();
 			System.out.println("Properties error, please try again");
 		} finally {
@@ -251,6 +262,22 @@ public class Arena extends Application {
 
 	public int getMaxFood() {
 		return maxFood;
+	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	public void setY(int y) {
+		this.y = y;
+	}
+
+	public void setMaxFood(int maxFood) {
+		this.maxFood = maxFood;
+	}
+
+	public void setSpeed(int speed) {
+		this.speed = speed;
 	}
 
 	public static void main(String[] args) {

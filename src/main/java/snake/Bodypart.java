@@ -1,4 +1,5 @@
 package snake;
+
 /**
  * This class represents a part of the snake.
  *
