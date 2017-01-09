@@ -4,6 +4,7 @@ stage('Echo Test'){
 
 }
 stage('Build'){
+	bat 'gradle clean --info'
 	checkout scm
 	bat 'gradle build --info'
 }
