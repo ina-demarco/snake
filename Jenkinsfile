@@ -1,5 +1,3 @@
-def gradle;
-
 node {
 stage('Echo Test'){
 	echo 'Hello World'
@@ -10,8 +8,7 @@ stage('Build'){
 	bat 'gradle build --info'
 }
 stage('UnitTests'){
-	gradle = load 'jenkins/gradle.groovy'
-	gradle.test()
+	bat 'gradle check --info'
 	junit '**/test/*.xml'
 }
 }
