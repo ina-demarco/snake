@@ -9,6 +9,6 @@ stage('Build'){
 }
 stage('UnitTests'){
 	bat 'gradle check --info'
-	junit '**/test/*.xml'
+	junit '**/test/*Test.xml'
 }
 }
