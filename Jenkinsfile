@@ -12,6 +12,6 @@ stage('Build'){
 stage('UnitTests'){
 	gradle = load 'jenkins/gradle.groovy'
 	gradle.test()
-	junit '**/test/*.xml
+	junit '**/test/*.xml'
 }
 }
