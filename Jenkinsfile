@@ -5,6 +5,6 @@ stage('Echo Test'){
 }
 stage('Build'){
 	checkout scm
-	gradlew.bat --info
+	call gradlew.bat
 }
 }
