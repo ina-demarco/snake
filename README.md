@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/ina-demarco/snake.png?label=ready&title=Ready)](https://waffle.io/ina-demarco/snake)
 # snake
 A student project to demonstrate test-driven development and continous integration, using the game Snake as an example
 
